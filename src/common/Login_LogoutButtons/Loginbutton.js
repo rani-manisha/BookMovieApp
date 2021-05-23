@@ -9,7 +9,7 @@ const LoginButton = function (props) {
         <div>
             <Button className="loginbuttonclass" variant="contained"
                 color="default" onClick={props.loginfunction}>
-                Login
+                {props.authTokenSet ? "Logout" : "Login"}
             </Button>
 
         </div >

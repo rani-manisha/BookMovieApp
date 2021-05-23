@@ -12,7 +12,8 @@ import LoginForm from './LoginForm.js'
 import { FormControl, InputLabel, Input, Button, useRadioGroup } from '@material-ui/core';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import Home from '../../screens/home/Home'
-//import 'bootstrap/dist/css/bootstrap.min.css'
+import { useCookies } from 'react-cookie';
+
 
 
 function TabPanel(props) {
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function LoginPage() {
+export default function LoginPage({ requestClose }) {
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
@@ -76,7 +77,31 @@ export default function LoginPage() {
         password: '',
         mobile_number: ''
     });
+
+    const [loggedInUser, setloggedInUser] = useState({
+        email_address: '',
+        password: '',
+    });
+
+
     const [usersList, setUsersList] = useState([]);
+    const [cookies, setCookie] = useCookies(['basic-auth']);
+    function loginUser(e) {
+        // const state = loggedInUser;
+        // state[e.target.name] = e.target.value;
+        // setUser({
+        //     first_name: state["first_name"],
+        //     last_name: state["last_name"],
+        //     email_address: state["email_address"],
+        //     password: state["password"],
+        //     mobile_number: state["mobile_number"],
+        // });
+        setloggedInUser(
+            {
+                ...loggedInUser, [e.target.name]: e.target.value
+            }
+        )
+    }
 
     function addUser(e) {
         const state = newUser;
@@ -129,20 +154,29 @@ export default function LoginPage() {
     const { first_name, last_name, email_address, password, mobile_number } = newUser;
 
     //goingToHomePage
-    function goToHomepage(e) {
+    function login(e) {
         e.preventDefault();
-
-
-        /*fetch('http://localhost:8085/api/v1/signup', {
+        const token = `Basic ${window.btoa(`${loggedInUser.email_address}:${loggedInUser.password}`)}`;
+        fetch('http://localhost:8085/api/v1/auth/login', {
             method: 'POST',
-            body: JSON.stringify(newUser),
+            // body: JSON.stringify(loggedInUser),
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json;charset=UTF-8",
+                "Authorization": token
             },
         })
-            .then(res => res.json())*/
-        <Home />
+            .then(response => {
+                if (response.ok) {
+                    setCookie('basic-auth', response.headers.get('access-token'), { path: '/' });
+                    requestClose();
+                }
+            }).catch(error =>
+                console.log(error)
+            );
+
+
+        // < Home />
     }
     return (
 
@@ -167,15 +201,15 @@ export default function LoginPage() {
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                    <form onSubmit={goToHomepage}>
+                    <form onSubmit={login}>
                         <FormControl>
                             <InputLabel htmlFor="my-input1" >Username*</InputLabel>
-                            <Input id="my-input1" aria-describedby="my-helper-text1" />
+                            <Input id="my-input1" aria-describedby="my-helper-text1" name="email_address" onChange={loginUser} value={loggedInUser.email_address} />
                         </FormControl>
                         <br></br>
                         <FormControl>
                             <InputLabel htmlFor="my-input2" >Password*</InputLabel>
-                            <Input id="my-input2" aria-describedby="my-helper-text2" />
+                            <Input id="my-input2" aria-describedby="my-helper-text2" name="password" onChange={loginUser} value={loggedInUser.password} />
                         </FormControl>
                         <br></br>
                         <br></br>

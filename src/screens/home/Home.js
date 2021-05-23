@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./Home.css";
-import upcomingmovies from './upcomingmovies.json';
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -89,53 +88,65 @@ const carduseStyles = makeStyles((theme) => ({
     },
 
 }));
-const genres = [
-    "Drama",
-    "Romance",
-    "Horror",
-    "Action",
-    "Crime",
-    "Thriller",
-    "Political",
-    "Social",
-    "Fantasy",
-    "Suspense",
-    "Adventure",
-    "Comedy"
-];
-
-const artists = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder',
-];
-
 
 const Home = () => {
     const upcomingMoviesGridClass = upcomingMoviesGriduseStyles();
     const moviesGridClass = moviesGriduseStyles();
     const cardClass = carduseStyles();
     const [name, setname] = React.useState([]);
-    const [genre, setgenre] = React.useState([]);
+    const [selectedGenre, setselectedGenre] = React.useState([]);
     const [first_name, setfirst_name] = React.useState([]);
     const [last_name, setlast_name] = React.useState([]);
-    const [artist, setartist] = React.useState([]);
+    const [selectedArtist, setselectedArtist] = React.useState([]);
     const [releaseDateStart, setreleaseDateStart] = React.useState([]);
     const [releaseDateEnd, setreleaseDateEnd] = React.useState([]);
-
-
-    const handlegenreChange = (event) => {
-        setgenre(event.target.value);
+    const [upcomingMovies, setupcomingMovies] = React.useState([]);
+    const [bookingMovies, setbookingMovies] = React.useState([]);
+    const [listedGenres, setlistedGenres] = React.useState([]);
+    const [listedArtists, setlistedArtists] = React.useState([]);
+    const [inputmoviename, setinputmoviename] = React.useState([]);
+    useEffect(() => {
+        fetch('http://localhost:8085/api/v1/movies', {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+        }).then(response => response.json())
+            .then(data => {
+                setupcomingMovies(data.movies);
+                setbookingMovies(data.movies);
+            });
+        fetch('http://localhost:8085/api/v1/artists', {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            }
+        }).then(response => response.json())
+            .then(data => {
+                let localArtists = data.artists;
+                let result = localArtists.map(a => a.first_name + " " + a.last_name);
+                setlistedArtists(result);
+            });
+        fetch('http://localhost:8085/api/v1/genres', {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            }
+        }).then(response => response.json())
+            .then(data => {
+                let localselectedGenre = data.genres;
+                let result = localselectedGenre.map(a => a.genre);
+                setlistedGenres(result);
+            })
+    }, [])
+    const handleselectedGenreChange = (event) => {
+        setselectedGenre(event.target.value);
     };
-    const handleartistChange = (event) => {
-        setartist(event.target.value);
+    const handleselectedArtistChange = (event) => {
+        setselectedArtist(event.target.value);
         // setfirst_name(event.target.value);
         // setlast_name(event.target.value);
     };
@@ -147,14 +158,41 @@ const Home = () => {
         setreleaseDateEnd(date);
     };
     const applyFilter = () => {
-
+        let selectedArtistStr = "";
+        let selectedGenreStr = "";
+        if (selectedArtist.length > 0) {
+            selectedArtistStr = selectedArtist.join(",");
+        }
+        if (selectedGenre.length > 0) {
+            selectedGenreStr = selectedGenre.join(",");
+        }
+        console.log(inputmoviename);
+        console.log(selectedGenreStr);
+        console.log(selectedArtistStr);
+        let query = "ttile={inputmoviename}";
+        fetch(`http://localhost:8085/api/v1/movies?title=${encodeURIComponent(inputmoviename)}&artists=${encodeURIComponent(selectedArtistStr)}&genre=${encodeURIComponent(selectedGenreStr)}`, {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                setbookingMovies(data.movies);
+            })
     }
+    function handleOnclickMoviedetails(moviID) {
+        console.log(moviID);
+        //redirect details/id
+        //https://reactrouter.com/web/api/Link wrap card in link
+    };
     return (
         <div>
             <h1 className='homepageheader'>Upcoming movies</h1>
             <div className={upcomingMoviesGridClass.root}>
-                <GridList className={upcomingMoviesGridClass.gridList} cols={6} cellHeight={250}>
-                    {upcomingmovies.map((tile) => (
+                {upcomingMovies && <GridList className={upcomingMoviesGridClass.gridList} cols={6} cellHeight={250}>
+                    {upcomingMovies.map((tile) => (
                         <GridListTile key={tile.id}>
                             <img src={tile.poster_url} alt={tile.title} />
                             <GridListTileBar
@@ -167,32 +205,35 @@ const Home = () => {
                         </GridListTile>
                     ))}
                 </GridList>
+                }
             </div>
 
             <div className='flex-container'>
                 {/* movies component */}
                 <div className={moviesGridClass.root}>
-                    <GridList spacing={1} className={moviesGridClass.gridList} cols={4}>
-                        {upcomingmovies.map((tile) => (
-                            <GridListTile key={tile.id} cellHeight={350} cols={tile.featured ? 4 : 1}>
-                                {/* {tile.featured ? 4 : 1} rows={tile.featured ? 4 : 1 */}
-                                < img src={tile.poster_url} alt={tile.title} />
-                                <GridListTileBar
-                                    title={tile.title}
-                                    titlePosition="bottom"
-                                    subtitle={'Release date: ' + tile.release_at}
+                    {bookingMovies &&
+                        <GridList spacing={1} className={moviesGridClass.gridList} cols={4}>
+                            {bookingMovies.map((tile) => (
+                                <GridListTile key={tile.id} cellHeight={550} cols={tile.featured ? 4 : 1} onClick={() => handleOnclickMoviedetails(tile.id)}>
+                                    {/* {tile.featured ? 4 : 1} rows={tile.featured ? 4 : 1 */}
+                                    < img src={tile.poster_url} alt={tile.title} />
+                                    <GridListTileBar
+                                        title={tile.title}
+                                        titlePosition="bottom"
+                                        subtitle={'Release date: ' + tile.release_date}
 
-                                    actionIcon={
-                                        <IconButton aria-label={`star ${tile.title}`} className={moviesGridClass.icon}>
-                                            <StarBorderIcon />
-                                        </IconButton>
-                                    }
-                                    actionPosition="left"
-                                    className={moviesGridClass.titleBar}
-                                />
-                            </GridListTile>
-                        ))}
-                    </GridList>
+                                        actionIcon={
+                                            <IconButton aria-label={`star ${tile.title}`} className={moviesGridClass.icon}>
+                                                <StarBorderIcon />
+                                            </IconButton>
+                                        }
+                                        actionPosition="left"
+                                        className={moviesGridClass.titleBar}
+                                    />
+                                </GridListTile>
+                            ))}
+                        </GridList>
+                    }
                 </div>
 
                 {/* making the card component*/}
@@ -204,7 +245,7 @@ const Home = () => {
                     <CardContent className={cardClass.root}>
                         <FormControl className={cardClass.formControl}>
                             <InputLabel htmlFor="my-input1" >Movie Name</InputLabel>
-                            <Input id="my-input1" aria-describedby="my-helper-text1" />
+                            <Input id="my-input1" aria-describedby="my-helper-text1" name='selectedmovie' value={inputmoviename} onChange={(e) => setinputmoviename(e.target.value)} />
                         </FormControl>
 
                         <br></br>
@@ -215,16 +256,16 @@ const Home = () => {
                                 labelId="demo-mutiple-checkbox-label"
                                 id="demo-mutiple-checkbox"
                                 multiple
-                                value={genre}
-                                onChange={handlegenreChange}
+                                value={selectedGenre}
+                                onChange={handleselectedGenreChange}
                                 input={<Input />}
                                 renderValue={(selected) => selected.join(', ')}
                             // MenuProps={MenuProps}
                             >
-                                {genres.map((genrename) => (
-                                    <MenuItem key={genrename} value={genrename}>
-                                        <Checkbox checked={genre.indexOf(genrename) > -1} />
-                                        <ListItemText primary={genrename} />
+                                {listedGenres.map((selectedGenrename) => (
+                                    <MenuItem key={selectedGenrename} value={selectedGenrename}>
+                                        <Checkbox checked={selectedGenre.indexOf(selectedGenrename) > -1} />
+                                        <ListItemText primary={selectedGenrename} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -238,15 +279,15 @@ const Home = () => {
                                 labelId="demo-mutiple-checkbox-label"
                                 id="demo-mutiple-checkbox"
                                 multiple
-                                value={artist}
-                                onChange={handleartistChange}
+                                value={selectedArtist}
+                                onChange={handleselectedArtistChange}
                                 input={<Input />}
                                 renderValue={(selected) => selected.join(', ')}
                             // MenuProps={MenuProps}
                             >
-                                {artists.map((name) => (
+                                {listedArtists.map((name) => (
                                     <MenuItem key={name} value={name}>
-                                        <Checkbox checked={artist.indexOf(name) > -1} />
+                                        <Checkbox checked={selectedArtist.indexOf(name) > -1} />
                                         <ListItemText primary={name} />
                                     </MenuItem>
                                 ))}
@@ -286,7 +327,7 @@ const Home = () => {
                         <br></br>
                         <Button className='cardClass.button' variant="contained" color="primary" onClick={applyFilter}>
                             APPLY
-                            </Button>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

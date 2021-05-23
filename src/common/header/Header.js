@@ -8,18 +8,33 @@ import LoginPage from "../Login_Register/LoginPage";
 import { Button } from 'react-bootstrap'
 import Home from "../../screens/home/Home"
 import Modal from "react-modal";
+import { useCookies } from 'react-cookie';
 
 
 Modal.setAppElement('#root')
 const Header = function () {
+    const [cookies, setCookie, removeCookie] = useCookies(['basic-auth']);
     const [modalOpen, setModalOpen] = useState(false);
+    const [authTokenSet, setAuthTokenSet] = useState(Boolean(cookies['basic-auth']));
     function loginbuttonfunction() {
-        setModalOpen(true);
+        if (authTokenSet) {
+            console.log("clear cookie");
+            removeCookie('basic-auth');
+            setAuthTokenSet(false);
+        }
+        else {
+            setModalOpen(true);
+        }
+    }
+
+    function handleModalClose() {
+        setModalOpen(false);
+        setAuthTokenSet(true);
     }
     return (
         <div className="headerclass" >
             <Logo />
-            <LoginButton loginfunction={loginbuttonfunction} />
+            <LoginButton loginfunction={loginbuttonfunction} authTokenSet={authTokenSet} />
             <Modal isOpen={modalOpen} onRequestClose={() => setModalOpen(false)}
                 style={
                     {
@@ -37,7 +52,7 @@ const Header = function () {
                 }
             >
                 {/* <button onclick={()=>setModalOpen(false)} >Close</button> */}
-                <LoginPage />
+                <LoginPage requestClose={handleModalClose} />
             </Modal>
 
 
