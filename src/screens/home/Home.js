@@ -8,7 +8,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
-import { Autorenew, NearMe } from "@material-ui/icons";
+import { Autorenew, Details, NearMe } from "@material-ui/icons";
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,6 +16,7 @@ import { CardHeader } from "@material-ui/core";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blue } from "@material-ui/core/colors";
 import { FormControl, TextField, InputLabel, Input, Button, useRadioGroup, Select, MenuItem, Checkbox, Chip, ListItemText, MenuProps } from '@material-ui/core';
+import { Link } from "react-router-dom";
 
 const upcomingMoviesGriduseStyles = makeStyles((theme) => ({
     root: {
@@ -105,8 +106,10 @@ const Home = () => {
     const [listedGenres, setlistedGenres] = React.useState([]);
     const [listedArtists, setlistedArtists] = React.useState([]);
     const [inputmoviename, setinputmoviename] = React.useState([]);
+    const [movieDetailsID, setmovieDetailsID] = React.useState("");
+
     useEffect(() => {
-        fetch('http://localhost:8085/api/v1/movies', {
+        fetch('http://localhost:8085/api/v1/movies?status=PUBLISHED', {
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -115,6 +118,16 @@ const Home = () => {
         }).then(response => response.json())
             .then(data => {
                 setupcomingMovies(data.movies);
+            });
+
+        fetch('http://localhost:8085/api/v1/movies?status=RELEASED', {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+        }).then(response => response.json())
+            .then(data => {
                 setbookingMovies(data.movies);
             });
         fetch('http://localhost:8085/api/v1/artists', {
@@ -182,10 +195,12 @@ const Home = () => {
                 setbookingMovies(data.movies);
             })
     }
-    function handleOnclickMoviedetails(moviID) {
-        console.log(moviID);
-        //redirect details/id
-        //https://reactrouter.com/web/api/Link wrap card in link
+    const handleOnclickMoviedetails = (moviID) => {
+        return (
+            <div>
+                <Details />
+            </div>
+        )
     };
     return (
         <div>
@@ -214,23 +229,24 @@ const Home = () => {
                     {bookingMovies &&
                         <GridList spacing={1} className={moviesGridClass.gridList} cols={4}>
                             {bookingMovies.map((tile) => (
-                                <GridListTile key={tile.id} cellHeight={550} cols={tile.featured ? 4 : 1} onClick={() => handleOnclickMoviedetails(tile.id)}>
-                                    {/* {tile.featured ? 4 : 1} rows={tile.featured ? 4 : 1 */}
-                                    < img src={tile.poster_url} alt={tile.title} />
-                                    <GridListTileBar
-                                        title={tile.title}
-                                        titlePosition="bottom"
-                                        subtitle={'Release date: ' + tile.release_date}
+                                <Link to={`/details/${tile.id}`}>
+                                    <GridListTile key={tile.id} cellHeight={550} cols={tile.featured ? 4 : 1} onClick={() => handleOnclickMoviedetails(tile.id)}>
+                                        {/* {tile.featured ? 4 : 1} rows={tile.featured ? 4 : 1 */}
+                                        < img src={tile.poster_url} alt={tile.title} />
+                                        <GridListTileBar
+                                            title={tile.title}
+                                            titlePosition="bottom"
+                                            subtitle={'Release date: ' + tile.release_date}
 
-                                        actionIcon={
-                                            <IconButton aria-label={`star ${tile.title}`} className={moviesGridClass.icon}>
-                                                <StarBorderIcon />
-                                            </IconButton>
-                                        }
-                                        actionPosition="left"
-                                        className={moviesGridClass.titleBar}
-                                    />
-                                </GridListTile>
+                                            actionIcon={
+                                                <IconButton aria-label={`star ${tile.title}`} className={moviesGridClass.icon}>
+                                                    <StarBorderIcon />
+                                                </IconButton>
+                                            }
+                                            actionPosition="left"
+                                            className={moviesGridClass.titleBar}
+                                        />
+                                    </GridListTile> </Link>
                             ))}
                         </GridList>
                     }

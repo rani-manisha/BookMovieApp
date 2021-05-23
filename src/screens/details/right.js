@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import artists from './artists.json'
 import Typography from '@material-ui/core/Typography';
@@ -38,17 +38,18 @@ const artistsGriduseStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Left() {
-    const [poster_url, setposter_url] = useState('https://m.media-amazon.com/images/M/MV5BOTk5ODg0OTU5M15BMl5BanBnXkFtZTgwMDQ3MDY3NjM@._V1_UY209_CR0,0,140,209_AL_.jpg');
+export default function Right(props) {
+    let movieId = props.movieData.id;
     const style = useStyles();
     const artistsGridClass = artistsGriduseStyles();
     const [critics_rating, setcritics_rating] = useState('0');
-    const [artists, setartists] = useState('Leonardo Dicaprio');
-    const [first_name, setfirst_name] = useState('Leonardo');
-    const [last_name, setlast_name] = useState('DeCaprio');
-    const [poster_picture_url, setposter_picture_url] = useState('https://m.media-amazon.com/images/M/MV5BMjI0MTg3MzI0M15BMl5BanBnXkFtZTcwMzQyODU2Mw@@._V1_UY1200_CR130,0,630,1200_AL_.jpg');
+    const [artists, setartists] = useState([]);
+    useEffect(() => {
+        console.log("HI");
+        console.log(props.movieData.artists);
+        setartists(props.movieData.artists);
+    }, [movieId]);
     return (
-
         <div style={{ 'width': '15%' }}>
             <div className={style.root}>
                 <Typography variant='h6' >Rate this movie</Typography>
@@ -62,22 +63,25 @@ export default function Left() {
                 />
 
                 <Typography variant='h6' style={{ 'margin-top': '16px', 'margin-bottom': '16px' }}>Artists: </Typography>
-
-                {/* <GridList spacing={1} className={artistsGridClass.gridList} cols={2}>
-                    {artists.map((artist) => (
-                        <GridListTile key={artist.id} cellHeight={350} cols={2}>
-                            < img src={artist.poster_picture_url} alt={artist.first_name} />
-                            <GridListTileBar
-                                title={artist.first_name}
-                                titlePosition="bottom"
-                                className={artistsGridClass.titleBar}
-                            />
-                        </GridListTile>
-                    ))}
-                </GridList> */}
+                <div>
+                    {artists &&
+                        < GridList spacing={1} className={artistsGridClass.gridList} cols={2}>
+                            {artists.map((artist) => (
+                                <GridListTile key={artist.id} cellHeight={350} cols={2}>
+                                    < img src={artist.profile_url} alt={artist.first_name + " " + artist.last_name} />
+                                    <GridListTileBar
+                                        title={artist.first_name + " " + artist.last_name}
+                                        titlePosition="bottom"
+                                        className={artistsGridClass.titleBar}
+                                    />
+                                </GridListTile>
+                            ))}
+                        </GridList>
+                    }
+                </div>
 
             </div>
 
-        </div>
+        </div >
     );
 }
