@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "first_name": "manisha",
+        "last_name": "kiorala",
+        "poster_picture_url": ""
+    },
+    {
+        "id": 2,
+        "first_name": "leonardo",
+        "last_name": "dicaprio",
+        "poster_picture_url": ""
+    },
+    {
+        "id": 3,
+        "first_name": "ranbeer",
+        "last_name": "kapoor",
+        "poster_picture_url": ""
+    },
+    {
+        "id": 4,
+        "first_name": "kay kay",
+        "last_name": "menon",
+        "poster_picture_url": ""
+    }
+]
