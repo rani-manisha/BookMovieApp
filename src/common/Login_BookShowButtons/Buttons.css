@@ -1,0 +1,16 @@
+.loginButtonClass{
+    position: relative;
+    float:right; 
+    margin-left: 10px; 
+   
+}
+
+.bookShowButtonclass{
+    position: relative;
+    float:left; 
+}
+
+.header-buttons-container{
+    position:flex;
+    float:right;
+}

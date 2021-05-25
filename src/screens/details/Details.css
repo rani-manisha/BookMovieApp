@@ -1,6 +1,10 @@
 .flex-container{
     position: flex;
-    justify-content: space-between;
+    /* justify-content: space-evenly; */
+    /* align-items: center; */
+    flex-wrap: nowrap;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .backButton{

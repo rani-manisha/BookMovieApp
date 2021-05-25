@@ -1,0 +1,17 @@
+.logoclass{
+    background-color: #ff7f7f;
+    height: 35px;
+    position: absolute;
+    float:left;
+    animation :Logo-spin infinite 8s linear;
+    pointer-events: none;
+}
+/**/
+@keyframes Logo-spin {
+    from{
+        transform: rotateX(0deg);
+    }
+    to{
+        transform: rotateX(3600deg);
+    }
+}

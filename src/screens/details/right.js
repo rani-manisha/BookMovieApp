@@ -24,10 +24,12 @@ const artistsGriduseStyles = makeStyles((theme) => ({
         display: 'flex',
         flexWrap: 'wrap',
         overflow: 'hidden',
+        justifyContent: 'space-around',
         backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-        width: 800,
+        width: 500,
+        height: 450,
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
     },
@@ -50,7 +52,7 @@ export default function Right(props) {
         setartists(props.movieData.artists);
     }, [movieId]);
     return (
-        <div style={{ 'width': '15%' }}>
+        <div style={{ 'max-width': '15%', 'flex': 'auto', 'justify-content': 'center', 'padding-left': '40px', 'margin': '10px' }}>
             <div className={style.root}>
                 <Typography variant='h6' >Rate this movie</Typography>
 
@@ -65,9 +67,10 @@ export default function Right(props) {
                 <Typography variant='h6' style={{ 'margin-top': '16px', 'margin-bottom': '16px' }}>Artists: </Typography>
                 <div>
                     {artists &&
-                        < GridList spacing={1} className={artistsGridClass.gridList} cols={2}>
+                        < GridList spacing={1} className={artistsGridClass.gridList} cellWidth={100} cols={2}>
                             {artists.map((artist) => (
-                                <GridListTile key={artist.id} cellHeight={350} cols={2}>
+                                <GridListTile key={artist.id} >
+                                    {/* cols={artist.cols || 1 */}
                                     < img src={artist.profile_url} alt={artist.first_name + " " + artist.last_name} />
                                     <GridListTileBar
                                         title={artist.first_name + " " + artist.last_name}

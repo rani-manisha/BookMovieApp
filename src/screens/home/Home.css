@@ -2,11 +2,7 @@
     background-color: #ff9999;
     padding: 8px;
     font-size: 1rem;
-    align-items: center;
-    display:flex;
-    flex-direction:column;
-    flex-wrap:wrap;
-    width: 100%;
+    text-align: center;
 }
 
 .flex-container{

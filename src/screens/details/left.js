@@ -9,7 +9,7 @@ import { Button, Typography } from '@material-ui/core';
 export default function Left(props) {
 
     return (
-        <div style={{ 'width': '15%' }}>
+        <div style={{ 'max-width': '15%', 'flex': 'auto', 'justify-content': 'center', 'padding-right': '40px' }}>
             <Typography>
                 {/* <Button component={Link} to="/home" >Back to Home</Button> */}
                 <Link to='/'><Button style={{ textTransform: 'none' }}> &lt; Back to home </Button></Link>

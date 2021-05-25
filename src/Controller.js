@@ -5,6 +5,7 @@ import Home from "./screens/home/Home"
 import Details from "./screens/details/Details"
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import BookShow from "./screens/bookshow/BookShow.js";
 
 function Controller() {
 
@@ -16,7 +17,8 @@ function Controller() {
                     <div>
                         <Switch>
                             <Route exact path='/' component={Home} />
-                            <Route path='/details/:id' component={Details} />
+                            <Route path='/movie/:id' component={Details} />
+                            <Route path='/bookshow/:id' component={BookShow} />
                         </Switch>
 
                     </div>

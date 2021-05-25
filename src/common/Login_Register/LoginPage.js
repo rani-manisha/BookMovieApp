@@ -201,8 +201,8 @@ export default function LoginPage({ requestClose }) {
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                    <form onSubmit={login}>
-                        <FormControl>
+                    <form onSubmit={login} style={{ 'alignContent': 'center' }}>
+                        <FormControl >
                             <InputLabel htmlFor="my-input1" >Username*</InputLabel>
                             <Input id="my-input1" aria-describedby="my-helper-text1" name="email_address" onChange={loginUser} value={loggedInUser.email_address} />
                         </FormControl>
@@ -220,7 +220,7 @@ export default function LoginPage({ requestClose }) {
 
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <ValidatorForm classname='formvalidatorclass' onSubmit={formSubmitted}>
+                    <ValidatorForm style={{ 'alignContent': 'center' }} onSubmit={formSubmitted}>
                         <TextValidator
                             id="first_name" type="text" name='first_name' label='First Name*' placeholder='First Name*' onChange={addUser} value={first_name}
                             validators={['required']} errorMessages={['required']}>

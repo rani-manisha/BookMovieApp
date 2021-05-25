@@ -29,6 +29,7 @@ const Details = (props) => {
     return (
         <div>
             <div className='flex-container'>
+
                 <Left poster={movieDetails.poster_url} />
                 <Middle movieData={movieDetails} />
                 <Right movieData={movieDetails} />
