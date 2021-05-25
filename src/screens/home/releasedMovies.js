@@ -6,6 +6,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import { Link } from "react-router-dom";
 import Details from '../details/Details';
 import { useDispatch, useSelector } from "react-redux";
+import api from '../../api';
 
 const releasedMoviesuseStyles = makeStyles((theme) => ({
     root: {
@@ -38,27 +39,18 @@ const ReleasedMovies = () => {
     const movieIdDispatch = useDispatch();
     const releasedMovies = useSelector(state => state.releasedMovies);
     useEffect(() => {
-        fetch('http://localhost:8085/api/v1/movies?status=RELEASED', {
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-        }).then(response => response.json())
-            .then(data => {
-                releasedMovieDispatch({ "type": "SET_RELEASED_MOVIES", payload: data.movies });
+        api.getReleasedMovies()
+            .then((response) => {
+                releasedMovieDispatch({ "type": "SET_RELEASED_MOVIES", payload: response.data.movies });
                 unsetMovieID({ "type": "UNSET_MOVIE_ID", payaload: "" });
-                //setbookingMovies(data.movies);
-            });
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }, []);
 
     const handleOnclickMoviedetails = (moviID) => {
         movieIdDispatch({ "type": "SET_MOVIE_ID", payload: moviID });
-        // return (
-        //     <div>
-        //         <Details />
-        //     </div>
-        // )
     };
 
     return (

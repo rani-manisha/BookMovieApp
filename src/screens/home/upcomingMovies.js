@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
+import api from '../../api';
 
 
 const UpcomingMovies = () => {
@@ -33,16 +34,13 @@ const UpcomingMovies = () => {
     }));
 
     useEffect(() => {
-        fetch('http://localhost:8085/api/v1/movies?status=PUBLISHED', {
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-        }).then(response => response.json())
-            .then(data => {
-                setupcomingMovies(data.movies);
-            });
+        api.getUpcomingMovies()
+            .then((response) => {
+                setupcomingMovies(response.data.movies);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }, []);
     const upcomingMoviesClass = upcomingMoviesuseStyles();
     return (

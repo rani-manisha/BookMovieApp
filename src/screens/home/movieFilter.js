@@ -8,6 +8,7 @@ import { CardHeader } from "@material-ui/core";
 import { FormControl, TextField, InputLabel, Input, Button, Select, MenuItem, Checkbox, ListItemText, MenuProps } from '@material-ui/core';
 import ReleasedMovies from './releasedMovies';
 import { useDispatch } from "react-redux";
+import api from '../../api';
 
 const carduseStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +36,7 @@ const MovieFilter = () => {
     const [name, setname] = useState([]);
     const [selectedGenre, setselectedGenre] = useState([]);
     const [selectedArtist, setselectedArtist] = useState([]);
-    const [releaseDateStart, setreleaseDateStart] = useState([]);
+    const [releaseDateStart, setreleaseDateStart] = useState("");
     const [releaseDateEnd, setreleaseDateEnd] = useState([]);
     const [bookingMovies, setbookingMovies] = useState([]);
     const [listedGenres, setlistedGenres] = useState([]);
@@ -44,29 +45,23 @@ const MovieFilter = () => {
     const [movieDetailsID, setmovieDetailsID] = useState("");
     const releasedMovieDispatch = useDispatch();
     useEffect(() => {
-        fetch('http://localhost:8085/api/v1/artists', {
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            }
-        }).then(response => response.json())
-            .then(data => {
-                let localArtists = data.artists;
+        api.getArtists()
+            .then((response) => {
+                let localArtists = response.data.artists;
                 let result = localArtists.map(a => a.first_name + " " + a.last_name);
                 setlistedArtists(result);
-            });
-        fetch('http://localhost:8085/api/v1/genres', {
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            }
-        }).then(response => response.json())
-            .then(data => {
-                let localselectedGenre = data.genres;
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        api.getGenres()
+            .then((response) => {
+                let localselectedGenre = response.data.genres;
                 let result = localselectedGenre.map(a => a.genre);
                 setlistedGenres(result);
+            })
+            .catch((error) => {
+                console.log(error)
             })
     }, [])
     const handleselectedGenreChange = (event) => {
@@ -76,11 +71,11 @@ const MovieFilter = () => {
         setselectedArtist(event.target.value);
     };
 
-    const handlereleaseDateStart = (date) => {
-        setreleaseDateStart(date);
+    const handlereleaseDateStart = (event) => {
+        setreleaseDateStart(event.target.value);
     };
-    const handlereleaseDateEnd = (date) => {
-        setreleaseDateEnd(date);
+    const handlereleaseDateEnd = (event) => {
+        setreleaseDateEnd(event.target.value);
     };
     const applyFilter = () => {
         let selectedArtistStr = "";
@@ -91,20 +86,13 @@ const MovieFilter = () => {
         if (selectedGenre.length > 0) {
             selectedGenreStr = selectedGenre.join(",");
         }
-        console.log(inputmoviename);
-        console.log(selectedGenreStr);
-        console.log(selectedArtistStr);
 
-        fetch(`http://localhost:8085/api/v1/movies?title=${encodeURIComponent(inputmoviename)}&artists=${encodeURIComponent(selectedArtistStr)}&genre=${encodeURIComponent(selectedGenreStr)}`, {
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-        }).then(response => response.json())
-            .then(data => {
-                console.log(data)
-                releasedMovieDispatch({ "type": "SET_RELEASED_MOVIES", payload: data.movies });
+        api.getFilteredMovies(inputmoviename, selectedArtistStr, selectedGenreStr, releaseDateStart, releaseDateEnd)
+            .then((response) => {
+                releasedMovieDispatch({ "type": "SET_RELEASED_MOVIES", payload: response.data.movies });;
+            })
+            .catch((error) => {
+                console.log(error)
             })
     }
     return (
@@ -170,10 +158,13 @@ const MovieFilter = () => {
                             label="Release Date Start"
                             type="date"
                             defaultValue="dd-mm-yyyy"
+                            value={releaseDateStart}
                             className={cardClass.textField}
                             onChange={handlereleaseDateStart}
+                            name={releaseDateStart}
+                            format={'yyyy-mm-dd'}
                             InputLabelProps={{
-                                shrink: true,
+                                shrink: true
                             }} />
                     </FormControl>
                     <br></br>
@@ -186,6 +177,9 @@ const MovieFilter = () => {
                             defaultValue="dd-mm-yyyy"
                             className={cardClass.textField}
                             onChange={handlereleaseDateEnd}
+                            value={releaseDateEnd}
+                            name={releaseDateEnd}
+                            format={'yyyy-mm-dd'}
                             InputLabelProps={{
                                 shrink: true,
                             }}

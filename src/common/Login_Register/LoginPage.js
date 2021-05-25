@@ -8,11 +8,10 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import "./LoginPage.css";
-import LoginForm from './LoginForm.js'
-import { FormControl, InputLabel, Input, Button, useRadioGroup } from '@material-ui/core';
+import { FormControl, InputLabel, Input, Button } from '@material-ui/core';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import Home from '../../screens/home/Home'
 import { useCookies } from 'react-cookie';
+import api from '../../api';
 
 
 
@@ -87,15 +86,6 @@ export default function LoginPage({ requestClose }) {
     const [usersList, setUsersList] = useState([]);
     const [cookies, setCookie] = useCookies(['basic-auth']);
     function loginUser(e) {
-        // const state = loggedInUser;
-        // state[e.target.name] = e.target.value;
-        // setUser({
-        //     first_name: state["first_name"],
-        //     last_name: state["last_name"],
-        //     email_address: state["email_address"],
-        //     password: state["password"],
-        //     mobile_number: state["mobile_number"],
-        // });
         setloggedInUser(
             {
                 ...loggedInUser, [e.target.name]: e.target.value
@@ -126,28 +116,21 @@ export default function LoginPage({ requestClose }) {
     const [registrationsuccessful, setregistrationsuccessful] = useState(false);
     const formSubmitted = (e) => {
         e.preventDefault();
-
-
-        fetch('http://localhost:8085/api/v1/signup', {
-            method: 'POST',
-            body: JSON.stringify(newUser),
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-        })
-            .then(res => res.json())
-        //.then(json => setUser(newUser))
-
-        setUser({
-            id: 0,
-            first_name: '',
-            last_name: '',
-            email_address: '',
-            password: '',
-            mobile_number: ''
-        });
-        setregistrationsuccessful(true);
+        api.userRegister(newUser)
+            .then((response) => {
+                setUser({
+                    id: 0,
+                    first_name: '',
+                    last_name: '',
+                    email_address: '',
+                    password: '',
+                    mobile_number: ''
+                });
+                setregistrationsuccessful(true);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
 
     }
 
@@ -156,27 +139,14 @@ export default function LoginPage({ requestClose }) {
     //goingToHomePage
     function login(e) {
         e.preventDefault();
-        const token = `Basic ${window.btoa(`${loggedInUser.email_address}:${loggedInUser.password}`)}`;
-        fetch('http://localhost:8085/api/v1/auth/login', {
-            method: 'POST',
-            // body: JSON.stringify(loggedInUser),
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-                "Authorization": token
-            },
-        })
-            .then(response => {
-                if (response.ok) {
-                    setCookie('basic-auth', response.headers.get('access-token'), { path: '/' });
-                    requestClose();
-                }
-            }).catch(error =>
+        api.userLogin(loggedInUser.email_address, loggedInUser.password)
+            .then((response) => {
+                setCookie('basic-auth', response.headers['access-token'], { path: '/' });
+                requestClose();
+            })
+            .catch((error) => {
                 console.log(error)
-            );
-
-
-        // < Home />
+            })
     }
     return (
 

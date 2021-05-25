@@ -51,73 +51,7 @@ const Home = () => {
     const [inputmoviename, setinputmoviename] = useState([]);
     const [movieDetailsID, setmovieDetailsID] = useState("");
 
-    // useEffect(() => {
 
-    //     fetch('http://localhost:8085/api/v1/artists', {
-    //         method: 'GET',
-    //         headers: {
-    //             "Accept": "application/json",
-    //             "Content-Type": "application/json;charset=UTF-8",
-    //         }
-    //     }).then(response => response.json())
-    //         .then(data => {
-    //             let localArtists = data.artists;
-    //             let result = localArtists.map(a => a.first_name + " " + a.last_name);
-    //             setlistedArtists(result);
-    //         });
-    //     fetch('http://localhost:8085/api/v1/genres', {
-    //         method: 'GET',
-    //         headers: {
-    //             "Accept": "application/json",
-    //             "Content-Type": "application/json;charset=UTF-8",
-    //         }
-    //     }).then(response => response.json())
-    //         .then(data => {
-    //             let localselectedGenre = data.genres;
-    //             let result = localselectedGenre.map(a => a.genre);
-    //             setlistedGenres(result);
-    //         })
-    // }, [])
-    // const handleselectedGenreChange = (event) => {
-    //     setselectedGenre(event.target.value);
-    // };
-    // const handleselectedArtistChange = (event) => {
-    //     setselectedArtist(event.target.value);
-    //     // setfirst_name(event.target.value);
-    //     // setlast_name(event.target.value);
-    // };
-
-    // const handlereleaseDateStart = (date) => {
-    //     setreleaseDateStart(date);
-    // };
-    // const handlereleaseDateEnd = (date) => {
-    //     setreleaseDateEnd(date);
-    // };
-    // const applyFilter = () => {
-    //     let selectedArtistStr = "";
-    //     let selectedGenreStr = "";
-    //     if (selectedArtist.length > 0) {
-    //         selectedArtistStr = selectedArtist.join(",");
-    //     }
-    //     if (selectedGenre.length > 0) {
-    //         selectedGenreStr = selectedGenre.join(",");
-    //     }
-    //     console.log(inputmoviename);
-    //     console.log(selectedGenreStr);
-    //     console.log(selectedArtistStr);
-    //     let query = "ttile={inputmoviename}";
-    //     fetch(`http://localhost:8085/api/v1/movies?title=${encodeURIComponent(inputmoviename)}&artists=${encodeURIComponent(selectedArtistStr)}&genre=${encodeURIComponent(selectedGenreStr)}`, {
-    //         method: 'GET',
-    //         headers: {
-    //             "Accept": "application/json",
-    //             "Content-Type": "application/json;charset=UTF-8",
-    //         },
-    //     }).then(response => response.json())
-    //         .then(data => {
-    //             console.log(data)
-    //             setbookingMovies(data.movies);
-    //         })
-    // }
     return (
         <div>
             <h1 className='homepageheader'>Upcoming movies</h1>
