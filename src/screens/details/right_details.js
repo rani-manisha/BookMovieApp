@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import artists from './artists.json'
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
 import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -28,7 +24,6 @@ const artistsGriduseStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-        width: 500,
         height: 450,
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
@@ -44,15 +39,13 @@ export default function Right(props) {
     let movieId = props.movieData.id;
     const style = useStyles();
     const artistsGridClass = artistsGriduseStyles();
-    const [critics_rating, setcritics_rating] = useState('0');
+    const [critics_rating, setcritics_rating] = useState(0);
     const [artists, setartists] = useState([]);
     useEffect(() => {
-        console.log("HI");
-        console.log(props.movieData.artists);
         setartists(props.movieData.artists);
     }, [movieId]);
     return (
-        <div style={{ 'max-width': '15%', 'flex': 'auto', 'justify-content': 'center', 'padding-left': '40px', 'margin': '10px' }}>
+        <div style={{ 'maxWidth': '20%', 'flex': 'auto', 'justifyContent': 'center', 'margin': '10px' }}>
             <div className={style.root}>
                 <Typography variant='h6' >Rate this movie</Typography>
 
@@ -64,10 +57,10 @@ export default function Right(props) {
                     }}
                 />
 
-                <Typography variant='h6' style={{ 'margin-top': '16px', 'margin-bottom': '16px' }}>Artists: </Typography>
+                <Typography variant='h6' style={{ 'marginTop': '16px', 'marginBottom': '16px' }}>Artists: </Typography>
                 <div>
                     {artists &&
-                        < GridList spacing={1} className={artistsGridClass.gridList} cellWidth={100} cols={2}>
+                        < GridList spacing={1} className={artistsGridClass.gridList} cols={2}>
                             {artists.map((artist) => (
                                 <GridListTile key={artist.id} >
                                     {/* cols={artist.cols || 1 */}

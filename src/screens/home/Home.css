@@ -3,19 +3,24 @@
     padding: 8px;
     font-size: 1rem;
     text-align: center;
+    margin: 0;
 }
 
 .flex-container{
     display: flex;
     flex-wrap: nowrap;
-    margin: 16px;
-    /* width:100%; */
-    /*flex-direction: row ;*/
-    justify-content: space-between 
+    margin:16px;
+    width: 100%;
+
+}
+.releasedMovieFilterContainer{
+    width: 24%; 
+    justify-content: center;
+
+    
+}
+.releasedMovieContainer{
+    width: 76%;
 }
 
-.button{
-   position: relative;
-    align-self: center;
-}
 

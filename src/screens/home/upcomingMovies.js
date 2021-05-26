@@ -8,7 +8,6 @@ import api from '../../api';
 
 const UpcomingMovies = () => {
     const [upcomingMovies, setupcomingMovies] = useState([]);
-    const [title, settitle] = useState([]);
     const upcomingMoviesuseStyles = makeStyles((theme) => ({
         root: {
             display: 'flex',
@@ -23,6 +22,10 @@ const UpcomingMovies = () => {
             flexWrap: 'nowrap',
             // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
             transform: 'translateZ(0)',
+        },
+        imageCustom: {
+            top: 0,
+            transform: 'unset'
         },
         title: {
             color: theme.palette.primary.light,
@@ -48,7 +51,7 @@ const UpcomingMovies = () => {
             {upcomingMovies && <GridList className={upcomingMoviesClass.gridList} cols={6} cellHeight={250}>
                 {upcomingMovies.map((upcomingmovie) => (
                     <GridListTile key={upcomingmovie.id}>
-                        <img src={upcomingmovie.poster_url} alt={upcomingmovie.title} />
+                        <img className={upcomingMoviesClass.imageCustom} src={upcomingmovie.poster_url} alt={upcomingmovie.title} />
                         <GridListTileBar
                             title={upcomingmovie.title}
                             classes={{

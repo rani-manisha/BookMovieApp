@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
 import "./Buttons.css";
-import { Button, ButtonBase } from '@material-ui/core';
-import LoginPage from "../Login_Register/LoginPage";
+import { Button } from '@material-ui/core';
 
 const LoginButton = function (props) {
     return (
@@ -11,7 +9,6 @@ const LoginButton = function (props) {
                 color="default" onClick={props.loginfunction}>
                 {props.authTokenSet ? "Logout" : "Login"}
             </Button>
-
         </div >
     );
 }

@@ -43,7 +43,8 @@ export default {
                 'artists': artists,
                 'genre': genre,
                 'start_date': releasedDate,
-                'end_date': endDate
+                'end_date': endDate,
+                'status': 'RELEASED'
             }
         }),
     userRegister: (newUser) =>

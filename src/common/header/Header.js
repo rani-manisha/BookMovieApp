@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./header.css";
 import Logo from "../logo/Logo";
-import LoginButton from "../Login_BookShowButtons/Loginbutton";
-import BookShowButton from "../Login_BookShowButtons/BookShowButton";
-import LoginPage from "../Login_Register/LoginPage";
+import LoginButton from "../Buttons-Login_BookShow/Loginbutton";
+import BookShowButton from "../Buttons-Login_BookShow/BookShowButton";
+import LoginPage from "../Modal-Login_Register/LoginModal";
 import Modal from "react-modal";
 import { useCookies } from 'react-cookie';
-import BookShow from '../../screens/bookshow/BookShow';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -14,12 +13,14 @@ import { Link } from "react-router-dom";
 Modal.setAppElement('#root')
 const Header = function () {
     const movieID = useSelector(state => state.movieDetailsID);
-    const [cookies, setCookie, removeCookie] = useCookies(['basic-auth']);
+    //eslint-disable-next-line no-unused-vars
+    const [cookies, setCookie, removeCookie] = useCookies(['']);
     const [modalOpen, setModalOpen] = useState(false);
     const [authTokenSet, setAuthTokenSet] = useState(Boolean(cookies['basic-auth']));
-    function handleLoginFunction() {
+
+    //login button to open login modal 
+    function handleLogin() {
         if (authTokenSet) {
-            console.log("clear cookie");
             removeCookie('basic-auth');
             setAuthTokenSet(false);
         }
@@ -27,6 +28,7 @@ const Header = function () {
             setModalOpen(true);
         }
     }
+    //book show button to open login modal if user not logged-in
     function handleBookShow(e) {
         if (!authTokenSet) {
             e.preventDefault();
@@ -34,6 +36,7 @@ const Header = function () {
         }
     }
 
+    //close login modal on successful login
     function handleModalClose() {
         setModalOpen(false);
         setAuthTokenSet(true);
@@ -41,14 +44,16 @@ const Header = function () {
     return (
         <div className="headerclass" >
             <Logo />
-            <LoginButton loginfunction={handleLoginFunction} authTokenSet={authTokenSet} />
+            <LoginButton loginfunction={handleLogin} authTokenSet={authTokenSet} />
             <Link to={`/bookshow/${movieID}`} onClick={(e) => handleBookShow(e)} >
+                {/* if movie is selected then show Book Show button */}
                 {
-                    movieID != '' ?
+                    movieID !== '' ?
                         <BookShowButton /> : null
                 }
 
             </Link>
+
             <Modal isOpen={modalOpen} onRequestClose={() => setModalOpen(false)}
                 style={{
                     content: {
@@ -56,7 +61,7 @@ const Header = function () {
                         left: '50%',
                         right: 'auto',
                         bottom: 'auto',
-                        transform: 'translate(-50%, -50%)'
+                        transform: 'translate(-50%, -50%)',
                     }
                 }}>
                 <LoginPage requestClose={handleModalClose} />

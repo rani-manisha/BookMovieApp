@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { useDispatch } from "react-redux";
 import './Details.css'
 
-import Left from './left'
-import Middle from './middle'
-import Right from './right'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Left from './left_details'
+import Middle from './middle_details'
+import Right from './right_details'
 
 
 const Details = (props) => {
     const [movieDetails, setmovieDetails] = useState({});
+    const movieIdDispatch = useDispatch();
     let moviedId = props.match.params.id;
     useEffect(() => {
         fetch(`http://localhost:8085/api/v1/movies/${encodeURIComponent(moviedId)}`, {
@@ -20,12 +20,10 @@ const Details = (props) => {
             },
         }).then(response => response.json())
             .then(data => {
-                console.log(data)
                 setmovieDetails(data);
             })
-        console.log(movieDetails.poster_url);
+        movieIdDispatch({ "type": "SET_MOVIE_ID", payload: moviedId });
     }, [moviedId]);
-    console.log(movieDetails);
     return (
         <div>
             <div className='flex-container'>

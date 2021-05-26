@@ -1,3 +1,9 @@
+.header-buttons-container{
+    position:flex;
+    float:right;
+    margin-right: 8px;
+}
+
 .loginButtonClass{
     position: relative;
     float:right; 
@@ -10,7 +16,3 @@
     float:left; 
 }
 
-.header-buttons-container{
-    position:flex;
-    float:right;
-}

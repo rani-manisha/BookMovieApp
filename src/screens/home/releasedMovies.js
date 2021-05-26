@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import { Link } from "react-router-dom";
-import Details from '../details/Details';
 import { useDispatch, useSelector } from "react-redux";
 import api from '../../api';
+import { UnsubscribeTwoTone } from "@material-ui/icons";
 
 const releasedMoviesuseStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexWrap: 'wrap',
         overflow: 'hidden',
+        width: '100%',
         backgroundColor: theme.palette.background.paper,
-        maxWidth: '76%',
 
     },
     gridList: {
-
-
+        overflow: UnsubscribeTwoTone,
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
+        width: '100%'
+    },
+    imageClass: {
+        height: '350px',
+        top: 0,
+        transform: 'unset',
+        width: '280px'
     },
     titleBar: {
         background:
@@ -56,12 +62,12 @@ const ReleasedMovies = () => {
     return (
         <div className={releasedMoviesClass.root}>
             {releasedMovies &&
-                <GridList spacing={1} cols={4} className={releasedMoviesClass.gridList} cellHeight={350} style={{ height: 'auto' }}>
+                <GridList spacing={1} cols={4} className={releasedMoviesClass.gridList} cellHeight={350}>
                     {releasedMovies.map((tile) => (
-                        <Link to={`/movie/${tile.id}`}>
+                        <Link to={`/movie/${tile.id}`} key={tile.id}>
                             <GridListTile key={tile.id} onClick={() => handleOnclickMoviedetails(tile.id)}>
                                 {/*{tile.featured ? 4 : 1} rows={tile.featured ? 4 : 1 */}
-                                < img src={tile.poster_url} alt={tile.title} />
+                                < img className={releasedMoviesClass.imageClass} src={tile.poster_url} alt={tile.title} />
                                 <GridListTileBar
                                     title={tile.title}
                                     titlePosition="bottom"

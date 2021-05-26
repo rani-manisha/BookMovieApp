@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { CardHeader } from "@material-ui/core";
-import { FormControl, TextField, InputLabel, Input, Button, Select, MenuItem, Checkbox, ListItemText, MenuProps } from '@material-ui/core';
-import ReleasedMovies from './releasedMovies';
+import { FormControl, TextField, InputLabel, Input, Button, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
 import { useDispatch } from "react-redux";
 import api from '../../api';
 
 const carduseStyles = makeStyles((theme) => ({
     root: {
-        margin: theme.spacing.unit,
-        // maxWidth: '24%'
+        margin: theme.spacing(0),
     },
     header: {
         color: theme.palette.primary.light,
@@ -33,18 +29,18 @@ const carduseStyles = makeStyles((theme) => ({
 
 const MovieFilter = () => {
     const cardClass = carduseStyles();
-    const [name, setname] = useState([]);
+    const [inputmoviename, setinputmoviename] = useState([]);
     const [selectedGenre, setselectedGenre] = useState([]);
     const [selectedArtist, setselectedArtist] = useState([]);
     const [releaseDateStart, setreleaseDateStart] = useState("");
     const [releaseDateEnd, setreleaseDateEnd] = useState([]);
-    const [bookingMovies, setbookingMovies] = useState([]);
     const [listedGenres, setlistedGenres] = useState([]);
     const [listedArtists, setlistedArtists] = useState([]);
-    const [inputmoviename, setinputmoviename] = useState([]);
-    const [movieDetailsID, setmovieDetailsID] = useState("");
+
     const releasedMovieDispatch = useDispatch();
+
     useEffect(() => {
+        // fetch artists in the filter
         api.getArtists()
             .then((response) => {
                 let localArtists = response.data.artists;
@@ -52,8 +48,8 @@ const MovieFilter = () => {
                 setlistedArtists(result);
             })
             .catch((error) => {
-                console.log(error)
             })
+        //fetch genres in the filter   
         api.getGenres()
             .then((response) => {
                 let localselectedGenre = response.data.genres;
@@ -61,7 +57,6 @@ const MovieFilter = () => {
                 setlistedGenres(result);
             })
             .catch((error) => {
-                console.log(error)
             })
     }, [])
     const handleselectedGenreChange = (event) => {
@@ -77,7 +72,7 @@ const MovieFilter = () => {
     const handlereleaseDateEnd = (event) => {
         setreleaseDateEnd(event.target.value);
     };
-    const applyFilter = () => {
+    const applyFilter = (event) => {
         let selectedArtistStr = "";
         let selectedGenreStr = "";
         if (selectedArtist.length > 0) {
@@ -92,28 +87,27 @@ const MovieFilter = () => {
                 releasedMovieDispatch({ "type": "SET_RELEASED_MOVIES", payload: response.data.movies });;
             })
             .catch((error) => {
-                console.log(error)
             })
     }
     return (
-        <div>
+        <div >
             <Card className={cardClass.root}>
 
                 <CardHeader className={cardClass.header} title='FIND MOVIES BY:' ></CardHeader>
 
                 <CardContent className={cardClass.root}>
                     <FormControl className={cardClass.formControl}>
-                        <InputLabel htmlFor="my-input1" >Movie Name</InputLabel>
-                        <Input id="my-input1" aria-describedby="my-helper-text1" name='selectedmovie' value={inputmoviename} onChange={(e) => setinputmoviename(e.target.value)} />
+                        <InputLabel htmlFor="movie_name" >Movie Name</InputLabel>
+                        <Input id="movie_name" name='selectedmovie' value={inputmoviename} onChange={(e) => setinputmoviename(e.target.value)} />
                     </FormControl>
+                    <br></br>
+                    <br></br>
 
-                    <br></br>
-                    <br></br>
                     <FormControl className={cardClass.formControl}>
-                        <InputLabel id="demo-mutiple-checkbox-label">Genre</InputLabel>
+                        <InputLabel id="genres-label">Genre</InputLabel>
                         <Select
-                            labelId="demo-mutiple-checkbox-label"
-                            id="demo-mutiple-checkbox"
+                            labelId="genres-label"
+                            id="genres"
                             multiple
                             value={selectedGenre}
                             onChange={handleselectedGenreChange}
@@ -128,14 +122,14 @@ const MovieFilter = () => {
                             ))}
                         </Select>
                     </FormControl>
+                    <br></br>
+                    <br></br>
 
-                    <br></br>
-                    <br></br>
                     <FormControl className={cardClass.formControl} >
-                        <InputLabel id="demo-mutiple-checkbox-label">Artist</InputLabel>
+                        <InputLabel id="artists-label">Artist</InputLabel>
                         <Select
-                            labelId="demo-mutiple-checkbox-label"
-                            id="demo-mutiple-checkbox"
+                            labelId="artists-label"
+                            id="artists"
                             multiple
                             value={selectedArtist}
                             onChange={handleselectedArtistChange}
@@ -152,16 +146,16 @@ const MovieFilter = () => {
                     </FormControl>
                     <br></br>
                     <br></br>
+
                     <FormControl className={cardClass.formControl}>
                         <TextField
                             id="Release-Date-Start"
                             label="Release Date Start"
                             type="date"
-                            defaultValue="dd-mm-yyyy"
                             value={releaseDateStart}
                             className={cardClass.textField}
                             onChange={handlereleaseDateStart}
-                            name={releaseDateStart}
+                            name={"Release-Date-Start"}
                             format={'yyyy-mm-dd'}
                             InputLabelProps={{
                                 shrink: true
@@ -169,16 +163,16 @@ const MovieFilter = () => {
                     </FormControl>
                     <br></br>
                     <br></br>
+
                     <FormControl className={cardClass.formControl}>
                         <TextField
                             id="Release-Date-End"
                             label="Release Date End"
                             type="date"
-                            defaultValue="dd-mm-yyyy"
                             className={cardClass.textField}
                             onChange={handlereleaseDateEnd}
                             value={releaseDateEnd}
-                            name={releaseDateEnd}
+                            name={"Release-Date-End"}
                             format={'yyyy-mm-dd'}
                             InputLabelProps={{
                                 shrink: true,
@@ -188,7 +182,7 @@ const MovieFilter = () => {
                     <br></br>
                     <br></br>
                     <br></br>
-                    <Button className='cardClass.button' variant="contained" color="primary" onClick={applyFilter}>
+                    <Button variant="contained" color="primary" onClick={applyFilter}>
                         APPLY
                         </Button>
                 </CardContent>
