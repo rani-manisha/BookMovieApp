@@ -33,6 +33,7 @@ const releasedMoviesuseStyles = makeStyles((theme) => ({
         background:
             'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
             'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+        width: '280px'
     },
 
 }));
@@ -62,7 +63,7 @@ const ReleasedMovies = () => {
     return (
         <div className={releasedMoviesClass.root}>
             {releasedMovies &&
-                <GridList spacing={1} cols={4} className={releasedMoviesClass.gridList} cellHeight={350}>
+                <GridList spacing={10} cols={4} className={releasedMoviesClass.gridList} cellHeight={350}>
                     {releasedMovies.map((tile) => (
                         <Link to={`/movie/${tile.id}`} key={tile.id}>
                             <GridListTile key={tile.id} onClick={() => handleOnclickMoviedetails(tile.id)}>
